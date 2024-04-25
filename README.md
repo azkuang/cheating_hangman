@@ -9,6 +9,8 @@ Find a large word file that has many options of words to choose from. Plan out s
 
 Downloaded a txt file of words from: https://github.com/Xethron/Hangman/blob/master/words.txt
 
+Create a working normal hangman game.
+
 **Solution**
 
 

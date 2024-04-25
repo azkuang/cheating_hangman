@@ -14,10 +14,25 @@
 using namespace std;
 
 class HangMan {
+    public:
+        // Function to split strings into seperate strings by space
+        void split(string str, list <string>& l) {
+            istringstream s(str);
+        
+            string word;
 
+            while (s >> word) 
+            {
+                l.push_back(word);
+            }
+        }
+
+        
 };
 
 int main() {
+    HangMan hangman;
+
     list <string> textList;
     string text;
     ifstream MyReadFile("words.txt");
