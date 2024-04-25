@@ -34,7 +34,7 @@ int main() {
 
     cout << "Welcome to Cheating Hangman!" << endl;
     
-    // Choose a random work from the list
+    // Choose a random word from the list
     srand(time(0));
     rand_index = rand() % textList.size();
     cout << rand_index << endl;
