@@ -16,15 +16,14 @@ using namespace std;
 class HangMan {
     public:
         // Function to split strings into seperate strings by space
-        void split(string str, list <string>& l) {
-            istringstream s(str);
-        
-            string word;
-
-            while (s >> word) 
-            {
-                l.push_back(word);
+        void split(string str, list <char>& l) {
+            for (int i=0;i<str.size();i++){
+                l.push_back(str[i]);
             }
+        }
+
+        void play(){
+            
         }
 
         
@@ -34,6 +33,7 @@ int main() {
     HangMan hangman;
 
     list <string> textList;
+    list <char> letters;
     string text;
     ifstream MyReadFile("words.txt");
 
@@ -52,15 +52,25 @@ int main() {
     // Choose a random word from the list
     srand(time(0));
     rand_index = rand() % textList.size();
-    cout << rand_index << endl;
     list<string>::iterator it = textList.begin();
     advance(it, rand_index);
     word = *it;
 
+    // Add each character of the word into a list
+    hangman.split(word, letters);
+
     cout << "The word has " << word.size() << " letters in it." << endl;
+
+    // Split the word into separate characters
+    // hangman.split(word, letters);
+
+    // for (auto w:letters){
+    //     cout<<"hi"<<endl;
+    // }
 
     // Game loop
     while (guesses > 0) {
+
         string player_guess;
 
         cout << "Guess a letter!" << endl;
@@ -68,6 +78,8 @@ int main() {
 
         guesses -= 1;
     }
+
+    cout << "You ran out of guesses :(, better luck next time!" << endl;
 
     return 0;
 }
