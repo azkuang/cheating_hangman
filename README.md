@@ -12,6 +12,8 @@ Downloaded a txt file of words from: https://github.com/Xethron/Hangman/blob/mas
 Create a working normal hangman game.
 
 **Solution**
+Have a main game loop that will ask users to guess a letter, if the letter guessed is incorrect, player losses a guess.
+Store the random word generated into a list as separate characters. 
 
 
 

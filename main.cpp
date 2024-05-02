@@ -22,7 +22,8 @@ class HangMan {
             }
         }
 
-        void play(){
+        // Creates an empty list
+        void create_empty(){
             
         }
 
@@ -34,6 +35,7 @@ int main() {
 
     list <string> textList;
     list <char> letters;
+    list <char> correct_letters;
     string text;
     ifstream MyReadFile("words.txt");
 
@@ -61,22 +63,22 @@ int main() {
 
     cout << "The word has " << word.size() << " letters in it." << endl;
 
-    // Split the word into separate characters
-    // hangman.split(word, letters);
-
-    // for (auto w:letters){
-    //     cout<<"hi"<<endl;
-    // }
-
     // Game loop
     while (guesses > 0) {
 
-        string player_guess;
-
+        char player_guess;
+        
         cout << "Guess a letter!" << endl;
         cin >> player_guess;
 
-        guesses -= 1;
+        for (auto l:letters){
+            if (player_guess!=l){
+                guesses -= 1;
+            }
+            else {
+
+            }
+        }
     }
 
     cout << "You ran out of guesses :(, better luck next time!" << endl;
