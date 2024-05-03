@@ -106,6 +106,11 @@ int main() {
 
         cout << playingWord << endl;
 
+        if (playingWord == word){
+            cout << "You win!" << endl;
+            break;
+        }
+
         // if(guessRight == true) {
         //     //Makes list of all possible words to cheat with
         //     for(int x = 0; x < textList.size(); x++) {
@@ -152,8 +157,9 @@ int main() {
         // }
     }
 
-    cout << "You ran out of guesses :(, better luck next time!" << endl;
-
+    if (guesses <= 0) {
+        cout << "You ran out of guesses :(, better luck next time!" << endl;
+    }
 
     return 0;
 }
