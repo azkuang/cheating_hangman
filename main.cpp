@@ -42,7 +42,7 @@ class HangMan {
         }
 
         // Method to create the cheating list
-        list <string> cheatingWords(list<string>& words, string& playingWord){
+        list <string> cheatingWords(list<string>& words, string& playingWord, set<char>& lettersGuessed){
             list <string> cheatingWords;
             bool match = false;
             for (const string& w: words){
@@ -52,6 +52,11 @@ class HangMan {
                 bool match = true;
                 for (int i=0;i<w.length();i++){
                     if (playingWord[i]!='_' && playingWord[i]!=w[i]){
+                        match = false;
+                        break;
+                    }
+                    // Ensures letters already guessed can't be in the cheating list
+                    if (lettersGuessed.find(w[i])!=lettersGuessed.end()){
                         match = false;
                         break;
                     }
@@ -82,7 +87,7 @@ int main() {
     list <char> letters;
     list <char> correct_letters;
     string text;
-    ifstream MyReadFile("words.txt");
+    ifstream MyReadFile("dictionary.txt");
     string word;
     int rand_index;
 
@@ -139,7 +144,7 @@ int main() {
         } else {
             // Fill in the playing word and cheat :)
             if (hangman.updateWord(playingWord, word, player_guess)){
-                cheatingList = hangman.cheatingWords(textList, playingWord);
+                cheatingList = hangman.cheatingWords(textList, playingWord, guessedLetters);
                 if (cheatingList.size() > 1){
                     word = hangman.pickCheatWord(cheatingList);
                     cout<<"I cheated >:)"<<endl;
