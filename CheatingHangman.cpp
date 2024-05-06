@@ -90,6 +90,7 @@ int main() {
     ifstream MyReadFile("dictionary.txt");
     string word;
     int rand_index;
+    int guesses = 7;
 
     // Reading in file
     while(getline (MyReadFile, text)) {
@@ -128,7 +129,7 @@ int main() {
     cout << "Your Word: " << playingWord << endl;
 
     // Game loop
-    while (true) {
+    while (guesses > 0) {
         char player_guess;
 
         // Ask user input for a letter
@@ -148,20 +149,34 @@ int main() {
                 if (cheatingList.size() > 1){
                     word = hangman.pickCheatWord(cheatingList);
                     cout<<"I cheated >:)"<<endl;
-                    cout<<"New word after cheating: "<<word<<endl;
+                    // Print out the possible words that the playing word could have changed to
+                    for (const string w:cheatingList){
+                        cout<<"Possible new words: "<<w<<endl;
+                    }
                 }
+            } else {
+                // If guess is incorrect decrement the guess int
+                guesses--;
+                cout<<"You have "<<guesses<<" guesses left"<<endl;
             }
         }
 
+        // Add guessed letters into the set
         guessedLetters.insert(player_guess);
 
+        // Display the current word with dashes
         cout << playingWord << endl;
 
         // Win condition
-        if (playingWord == word){
+        if (playingWord == word || cheatingList.size() == 1){
             cout << "You win!" << endl;
             break;
         }
+    }
+
+    // Lose condition
+    if (guesses <= 0) {
+        cout<<"You lost :("<<endl;
     }
 
     return 0;
