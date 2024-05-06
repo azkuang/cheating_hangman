@@ -10,6 +10,7 @@
 #include <string.h>
 #include <string>
 #include <ctime>
+#include <set>
 
 using namespace std;
 
@@ -27,21 +28,63 @@ class HangMan {
             return string( 1, c );
         }
 
-        
+        // Method to update the display word
+        bool updateWord(string& playingWord, string& word, char guess){
+            bool correctGuess = false;
+            for (int i=0;i<word.length();i++){
+                if (word[i]==guess){
+                    playingWord[i]=guess;
+                    cout<<"Correct Guess!"<<endl;
+                    correctGuess = true;
+                }
+            }
+            return correctGuess;
+        }
+
+        // Method to create the cheating list
+        list <string> cheatingWords(list<string>& words, string& playingWord){
+            list <string> cheatingWords;
+            bool match = false;
+            for (const string& w: words){
+                if (w.length() != playingWord.length()){
+                    continue;
+                }
+                bool match = true;
+                for (int i=0;i<w.length();i++){
+                    if (playingWord[i]!='_' && playingWord[i]!=w[i]){
+                        match = false;
+                        break;
+                    }
+                }
+                if (match){
+                    cheatingWords.push_back(w);
+                }
+            }
+            return cheatingWords;
+        } 
+
+        // Method to pick a random word from the cheating list
+        string pickCheatWord(list<string>& cheatingWords){
+            int index = rand() % cheatingWords.size();
+            list<string>::iterator it = cheatingWords.begin();
+            advance(it, index);
+            string cheatWord = *it;
+            return cheatWord;
+        }
 };
 
 int main() {
+    // Initialize hangman class
     HangMan hangman;
 
+    // variables and data structures
     list <string> textList;
     list <char> letters;
     list <char> correct_letters;
     string text;
     ifstream MyReadFile("words.txt");
-
     string word;
     int rand_index;
-    int guesses = 7;
 
     // Reading in file
     while(getline (MyReadFile, text)) {
@@ -61,14 +104,18 @@ int main() {
     string playingWord;
     list <char> letterGuesses;
 
+    // Create a set to hold player guesses
+    set <char> guessedLetters;
+
     // Add each character of the word into a list
     hangman.split(word, letters);
 
-    // Display the word for now (DELETE LATER)
-    cout<<word<<endl;
+    // Display the word
+    cout<<"Word to guess: "<<word<<endl;
 
     cout << "The word has " << word.size() << " letters in it." << endl;
 
+    // Creating the string that has _ for the letters in the word
     for(int j = 0; j < wordSize; j++) {
         playingWord += '_';
     }
@@ -76,89 +123,40 @@ int main() {
     cout << "Your Word: " << playingWord << endl;
 
     // Game loop
-    while (guesses > 0) {
+    while (true) {
         char player_guess;
 
+        // Ask user input for a letter
         cout << "Guess a letter!" << endl;
         cin >> player_guess;
 
+        // List to hold all possible words to switch with the current word
         list <string> cheatingList;
 
-        bool guessRight = false;
-        int index_correct_word = 0;
-        for(char p : word) {
-            if(p == (player_guess)){
-                guessRight = true;
-                break;
+        // Condition to check if a letter as already been guessed using a set
+        if (guessedLetters.find(player_guess)!=guessedLetters.end()){
+            cout<<"You have already guessed "<<player_guess<<" try again."<<endl;
+        } else {
+            // Fill in the playing word and cheat :)
+            if (hangman.updateWord(playingWord, word, player_guess)){
+                cheatingList = hangman.cheatingWords(textList, playingWord);
+                if (cheatingList.size() > 1){
+                    word = hangman.pickCheatWord(cheatingList);
+                    cout<<"I cheated >:)"<<endl;
+                    cout<<"New word after cheating: "<<word<<endl;
+                }
             }
-            index_correct_word++;
         }
 
-        if (guessRight==true){
-            list<char>::iterator it = letters.begin();
-            advance(it, index_correct_word);
-            char correct_letter = *it;
-            playingWord.replace(index_correct_word, 1, hangman.ToStr(correct_letter));
-        } 
-        else {
-            guesses--;
-        }
+        guessedLetters.insert(player_guess);
 
         cout << playingWord << endl;
 
+        // Win condition
         if (playingWord == word){
             cout << "You win!" << endl;
             break;
         }
-
-        // if(guessRight == true) {
-        //     //Makes list of all possible words to cheat with
-        //     for(int x = 0; x < textList.size(); x++) {
-
-        //         //Goes through the list for if statement
-        //         list<string>::iterator it = textList.begin();
-        //         advance(it, 1);
-        //         string wordInList = *it;
-
-        //         //checks if the word is the same size and has the same of already guessed letters
-        //         if(wordInList.size() == word.size()) {
-        //             bool stopper = false;
-        //             for(int y = 0; y < word.size(); y++) {
-        //                 if(wordInList[y] != word[y] && word[y] != '_') {
-        //                     stopper = true;
-        //                 }
-        //             }
-        //             if(stopper == false) {
-        //                 cheatingList.push_front(word);
-        //             }
-        //         }
-        //     }
-        //     if(cheatingList.empty() == false) {
-        //         cout << "Hmm it seems you were wrong. Try again" << endl;
-        //     }
-
-        //     else {
-        //         for(int z = 0; z < playingWord.size();z++) {
-        //             if(player_guess == word[z]) {
-        //                 playingWord = player_guess;
-        //             }
-        //         }
-        //     }
-
-        //     if(playingWord == word) {
-        //         cout << "You win...." << endl;
-        //         break;
-        //     }
-        //     letterGuesses.push_front(player_guess);
-        // }
-        // else {
-        //     cout << "Wrong, try again" << endl;
-        //     letterGuesses.push_front(player_guess);
-        // }
-    }
-
-    if (guesses <= 0) {
-        cout << "You ran out of guesses :(, better luck next time!" << endl;
     }
 
     return 0;
